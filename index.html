@@ -140,6 +140,7 @@
     opacity: 0.78; letter-spacing: 0.1px;
   }
   .chip-forecast .f-prefix { opacity: 0.7; margin-right: 3px; }
+  .hero-forecast-inline { font-size: 12px; margin-top: 4px; }
   .hero-divider { width: 1px; background: rgba(255,255,255,0.25); }
   .hero-forecast {
     display: flex; align-items: center; justify-content: space-between;
@@ -444,6 +445,7 @@
         Saldo da conta
       </div>
       <div class="hero-amount" id="heroAmount">R$ 0,00</div>
+      <div class="chip-forecast hero-forecast-inline"><span class="f-prefix">previsto</span><span id="saldoPrev">R$ 0,00</span></div>
       <div class="hero-chips">
         <div class="chip">
           <div class="chip-label">
@@ -453,7 +455,7 @@
             Recebido
           </div>
           <div class="chip-value" id="recebidoVal">R$ 0,00</div>
-          <div class="chip-forecast"><span class="f-prefix">+ previsto</span><span id="recebidoPrev">R$ 0,00</span></div>
+          <div class="chip-forecast"><span class="f-prefix">previsto</span><span id="recebidoPrev">R$ 0,00</span></div>
         </div>
         <div class="hero-divider"></div>
         <div class="chip">
@@ -464,15 +466,8 @@
             Gasto
           </div>
           <div class="chip-value" id="gastoVal">R$ 0,00</div>
-          <div class="chip-forecast"><span class="f-prefix">+ previsto</span><span id="gastoPrev">R$ 0,00</span></div>
+          <div class="chip-forecast"><span class="f-prefix">previsto</span><span id="gastoPrev">R$ 0,00</span></div>
         </div>
-      </div>
-      <div class="hero-forecast">
-        <div class="hf-label">
-          <span class="dot"></span>
-          Previsão de saldo
-        </div>
-        <div class="hf-value" id="saldoPrev">R$ 0,00</div>
       </div>
     </div>
   </div>
