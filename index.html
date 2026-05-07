@@ -685,8 +685,8 @@ function render() {
   document.getElementById('heroAmount').textContent = fmtBRL(saldo);
   document.getElementById('recebidoVal').textContent = fmtBRLPlain(t.recebidos);
   document.getElementById('gastoVal').textContent = fmtBRLPlain(t.gastos);
-  document.getElementById('recebidoPrev').textContent = fmtBRLPlain(t.recebidosPrev);
-  document.getElementById('gastoPrev').textContent = fmtBRLPlain(t.gastosPrev);
+  document.getElementById('recebidoPrev').textContent = fmtBRLPlain(t.recebidos + t.recebidosPrev);
+  document.getElementById('gastoPrev').textContent = fmtBRLPlain(t.gastos + t.gastosPrev);
   document.getElementById('saldoPrev').textContent = fmtBRL(saldo + t.recebidosPrev + t.gastosPrev);
   document.getElementById('faturaVal').textContent = fmtBRLPlain(t.saldoCartao);
   const credEntries = entries.filter(e => e.account === 'cred');
