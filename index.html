@@ -716,7 +716,7 @@ function renderList(entries, year, month) {
     return;
   }
 
-  const sorted = [...entries].sort((a, b) => b.day - a.day);
+  const sorted = [...entries].sort((a, b) => a.day - b.day);
   let html = '<div class="list">';
   let lastDay = null;
   for (const e of sorted) {
