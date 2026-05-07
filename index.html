@@ -135,31 +135,29 @@
   .chip-value {
     font-size: 17px; font-weight: 600; margin-top: 4px; letter-spacing: -0.2px;
   }
+  .chip-forecast {
+    font-size: 11px; font-weight: 500; margin-top: 2px;
+    opacity: 0.78; letter-spacing: 0.1px;
+  }
+  .chip-forecast .f-prefix { opacity: 0.7; margin-right: 3px; }
   .hero-divider { width: 1px; background: rgba(255,255,255,0.25); }
-  .hero-foreseen {
-    display: flex; flex-direction: column; gap: 6px;
+  .hero-forecast {
+    display: flex; align-items: center; justify-content: space-between;
     margin-top: 14px; padding-top: 12px;
     border-top: 1px solid rgba(255,255,255,0.18);
     position: relative;
   }
-  .chip-foreseen {
+  .hero-forecast .hf-label {
     display: flex; align-items: center; gap: 8px;
-    font-size: 12px; opacity: 0.88; font-weight: 500;
+    font-size: 12px; opacity: 0.92; font-weight: 500;
   }
-  .chip-foreseen .dot {
+  .hero-forecast .hf-label .dot {
     width: 6px; height: 6px; border-radius: 3px;
-    background: rgba(255,255,255,0.7); flex-shrink: 0;
+    background: #fff; flex-shrink: 0;
   }
-  .chip-foreseen .f-label { flex: 1; }
-  .chip-foreseen .f-value { font-weight: 600; letter-spacing: -0.1px; }
-  .chip-foreseen.forecast {
-    margin-top: 4px; padding-top: 10px;
-    border-top: 1px dashed rgba(255,255,255,0.22);
-    font-size: 13px; opacity: 1;
+  .hero-forecast .hf-value {
+    font-family: var(--serif); font-size: 20px; letter-spacing: -0.4px;
   }
-  .chip-foreseen.forecast .dot { background: #fff; }
-  .chip-foreseen.forecast .f-label { font-weight: 600; }
-  .chip-foreseen.forecast .f-value { font-size: 15px; }
 
   /* Cartão card */
   .card-row-wrap { padding: 14px 22px 0; }
@@ -455,6 +453,7 @@
             Recebido
           </div>
           <div class="chip-value" id="recebidoVal">R$ 0,00</div>
+          <div class="chip-forecast"><span class="f-prefix">+ previsto</span><span id="recebidoPrev">R$ 0,00</span></div>
         </div>
         <div class="hero-divider"></div>
         <div class="chip">
@@ -465,24 +464,15 @@
             Gasto
           </div>
           <div class="chip-value" id="gastoVal">R$ 0,00</div>
+          <div class="chip-forecast"><span class="f-prefix">+ previsto</span><span id="gastoPrev">R$ 0,00</span></div>
         </div>
       </div>
-      <div class="hero-foreseen">
-        <div class="chip-foreseen">
+      <div class="hero-forecast">
+        <div class="hf-label">
           <span class="dot"></span>
-          <span class="f-label">Previsto a receber</span>
-          <span class="f-value" id="recebidoPrev">R$ 0,00</span>
+          Previsão de saldo
         </div>
-        <div class="chip-foreseen">
-          <span class="dot"></span>
-          <span class="f-label">Previsto a gastar</span>
-          <span class="f-value" id="gastoPrev">R$ 0,00</span>
-        </div>
-        <div class="chip-foreseen forecast">
-          <span class="dot"></span>
-          <span class="f-label">Previsão de saldo</span>
-          <span class="f-value" id="saldoPrev">R$ 0,00</span>
-        </div>
+        <div class="hf-value" id="saldoPrev">R$ 0,00</div>
       </div>
     </div>
   </div>
