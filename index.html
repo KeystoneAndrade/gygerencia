@@ -152,6 +152,14 @@
   }
   .chip-foreseen .f-label { flex: 1; }
   .chip-foreseen .f-value { font-weight: 600; letter-spacing: -0.1px; }
+  .chip-foreseen.forecast {
+    margin-top: 4px; padding-top: 10px;
+    border-top: 1px dashed rgba(255,255,255,0.22);
+    font-size: 13px; opacity: 1;
+  }
+  .chip-foreseen.forecast .dot { background: #fff; }
+  .chip-foreseen.forecast .f-label { font-weight: 600; }
+  .chip-foreseen.forecast .f-value { font-size: 15px; }
 
   /* Cartão card */
   .card-row-wrap { padding: 14px 22px 0; }
@@ -470,6 +478,11 @@
           <span class="f-label">Previsto a gastar</span>
           <span class="f-value" id="gastoPrev">R$ 0,00</span>
         </div>
+        <div class="chip-foreseen forecast">
+          <span class="dot"></span>
+          <span class="f-label">Previsão de saldo</span>
+          <span class="f-value" id="saldoPrev">R$ 0,00</span>
+        </div>
       </div>
     </div>
   </div>
@@ -682,6 +695,7 @@ function render() {
   document.getElementById('gastoVal').textContent = fmtBRLPlain(t.gastos);
   document.getElementById('recebidoPrev').textContent = fmtBRLPlain(t.recebidosPrev);
   document.getElementById('gastoPrev').textContent = fmtBRLPlain(t.gastosPrev);
+  document.getElementById('saldoPrev').textContent = fmtBRL(saldo + t.recebidosPrev + t.gastosPrev);
   document.getElementById('faturaVal').textContent = fmtBRLPlain(t.saldoCartao);
   const credEntries = entries.filter(e => e.account === 'cred');
   const openCount = credEntries.filter(e => !e.paid).length;
