@@ -184,6 +184,9 @@
   .card-info-amount {
     font-family: var(--serif); font-size: 22px; line-height: 1.1; margin-top: 2px;
   }
+  .card-actions {
+    display: flex; flex-direction: column; align-items: flex-end; gap: 6px; margin-left: auto;
+  }
   .card-badge {
     padding: 5px 10px; border-radius: 999px;
     background: var(--pink-soft); color: var(--pink);
@@ -242,11 +245,12 @@
   }
   .check.on { border: none; background: var(--pos); }
   .entry-body { flex: 1; min-width: 0; }
+  .entry-top { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
   .entry-desc {
     font-size: 15px; font-weight: 500; color: var(--ink);
-    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; min-width: 0;
   }
-  .entry-meta { display: flex; align-items: center; gap: 6px; margin-top: 2px; }
+  .entry-meta { display: flex; align-items: center; gap: 6px; margin-top: 3px; flex-wrap: wrap; }
   .acc-badge {
     font-size: 11px; font-weight: 600; padding: 2px 7px; border-radius: 6px;
   }
@@ -259,8 +263,7 @@
   .pending { font-size: 11px; font-weight: 600; color: var(--neg); }
   .entry-amount {
     font-size: 16px; font-weight: 600; color: var(--ink);
-    letter-spacing: -0.2px; text-align: right;
-    white-space: nowrap; flex-shrink: 0;
+    letter-spacing: -0.2px; white-space: nowrap; flex-shrink: 0;
   }
   .entry-amount.income { color: var(--pos); }
   .entry-actions {
@@ -452,7 +455,7 @@
         Saldo da conta
       </div>
       <div class="hero-amount" id="heroAmount">R$ 0,00</div>
-      <div class="chip-forecast hero-forecast-inline"><span class="f-prefix">previsto</span><span id="saldoPrev">R$ 0,00</span></div>
+      <div class="chip-forecast hero-forecast-inline"><span id="saldoPrev">R$ 0,00</span></div>
       <div class="hero-chips">
         <div class="chip">
           <div class="chip-label">
@@ -462,7 +465,7 @@
             Recebido
           </div>
           <div class="chip-value" id="recebidoVal">R$ 0,00</div>
-          <div class="chip-forecast"><span class="f-prefix">previsto</span><span id="recebidoPrev">R$ 0,00</span></div>
+          <div class="chip-forecast"><span id="recebidoPrev">R$ 0,00</span></div>
         </div>
         <div class="hero-divider"></div>
         <div class="chip">
@@ -473,7 +476,7 @@
             Gasto
           </div>
           <div class="chip-value" id="gastoVal">R$ 0,00</div>
-          <div class="chip-forecast"><span class="f-prefix">previsto</span><span id="gastoPrev">R$ 0,00</span></div>
+          <div class="chip-forecast"><span id="gastoPrev">R$ 0,00</span></div>
         </div>
       </div>
     </div>
@@ -481,16 +484,14 @@
 
   <div class="card-row-wrap">
     <div class="card-row">
-      <div class="card-icon">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="2.5" y="5" width="19" height="14" rx="2.5" fill="#9B7DD4"/><rect x="2.5" y="8.5" width="19" height="2.5" fill="#fff" opacity="0.6"/><rect x="5" y="14" width="5" height="2" rx="1" fill="#fff" opacity="0.7"/></svg>
-      </div>
-      <div class="card-info">
+<div class="card-info">
         <div class="card-info-label">Fatura do cartão</div>
         <div class="card-info-amount" id="faturaVal">R$ 0,00</div>
       </div>
-      <div class="card-badge" id="faturaBadge">0 em aberto</div>
-      <button class="pay-btn" id="payBtn" style="display:none;">Pagar</button>
-      <button class="pay-btn reopen" id="reopenBtn" style="display:none;">Reabrir</button>
+      <div class="card-actions">
+        <button class="pay-btn" id="payBtn" style="display:none;">Pagar</button>
+        <button class="pay-btn reopen" id="reopenBtn" style="display:none;">Reabrir</button>
+      </div>
     </div>
   </div>
 
@@ -642,6 +643,7 @@ function fmtBRL(n) {
 function fmtBRLPlain(n) {
   return 'R$ ' + Math.abs(n).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
+
 function escapeHtml(s) {
   return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
 }
@@ -657,7 +659,8 @@ function totalsFor(entries) {
     } else {
       if (e.paid) gastos += e.amount; else gastosPrev += e.amount;
     }
-    if (e.account === 'cc') { if (e.paid) saldoConta += e.amount; } else saldoCartao += e.amount;
+    if (e.paid) saldoConta += e.amount;
+    if (e.account === 'cred') saldoCartao += e.amount;
   }
   return { recebidos, gastos, recebidosPrev, gastosPrev, saldoConta, saldoCartao };
 }
@@ -668,7 +671,7 @@ function prevSaldoConta() {
   for (const key in state.entries) {
     const [y, m] = key.split('-').map(Number);
     if (y * 12 + m >= cutoff) continue;
-    for (const e of state.entries[key]) if (e.account === 'cc' && e.paid) s += e.amount;
+    for (const e of state.entries[key]) if (e.paid) s += e.amount;
   }
   return s;
 }
@@ -691,10 +694,7 @@ function render() {
   document.getElementById('faturaVal').textContent = fmtBRLPlain(t.saldoCartao);
   const credEntries = entries.filter(e => e.account === 'cred');
   const openCount = credEntries.filter(e => !e.paid).length;
-  const badge = document.getElementById('faturaBadge');
   const allPaid = credEntries.length > 0 && openCount === 0;
-  badge.textContent = allPaid ? 'Fatura paga' : `${openCount} em aberto`;
-  badge.classList.toggle('paid', allPaid);
   document.getElementById('payBtn').style.display = openCount > 0 ? '' : 'none';
   document.getElementById('reopenBtn').style.display = allPaid ? '' : 'none';
   document.getElementById('countLabel').textContent = `${entries.length} ${entries.length === 1 ? 'item' : 'itens'}`;
@@ -767,14 +767,16 @@ function entryHtml(e) {
           : `<button class="check ${e.paid ? 'on' : ''}" aria-label="Marcar como pago">${e.paid ? '<svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>' : ''}</button>`
         }
         <div class="entry-body">
-          <div class="entry-desc">${escapeHtml(e.description)}</div>
+          <div class="entry-top">
+            <div class="entry-desc">${escapeHtml(e.description)}</div>
+            <div class="entry-amount ${isIncome ? 'income' : ''}">${isIncome ? '+' : '−'} ${fmtBRLPlain(e.amount)}</div>
+          </div>
           <div class="entry-meta">
             <span class="acc-badge ${e.account}">${accLabel}</span>
             ${e.recurring ? `<span class="recur"><svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M4 9V7a2 2 0 0 1 2-2h11l-2-2m2 10v2a2 2 0 0 1-2 2H5l2 2" stroke="#7A6168" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> mensal</span>` : ''}
             ${!e.paid ? '<span class="pending">· pendente</span>' : ''}
           </div>
         </div>
-        <div class="entry-amount ${isIncome ? 'income' : ''}">${isIncome ? '+' : '−'} ${fmtBRLPlain(e.amount)}</div>
       </div>
       <div class="entry-actions ${expanded && !isLocked(e) ? '' : 'hidden'}">
         <button class="action-btn edit-btn">
@@ -990,7 +992,7 @@ function openSheet() {
     state.form = {
       type: editing.amount > 0 ? 'in' : 'out',
       account: editing.account,
-      amount: Math.abs(editing.amount).toFixed(2).replace('.', ','),
+      amount: maskAmount(Math.abs(editing.amount).toFixed(2).replace('.', '')),
       description: editing.description,
       day: editing.day,
       paid: !!editing.paid,
@@ -1077,10 +1079,19 @@ document.querySelectorAll('#accSeg .seg-btn').forEach(b => {
   b.addEventListener('click', () => { state.form.account = b.dataset.val; syncSheet(); });
 });
 
+function maskAmount(digits) {
+  if (!digits) return '';
+  const n = parseInt(digits, 10);
+  if (isNaN(n)) return '';
+  const cents = n % 100;
+  const reais = Math.floor(n / 100);
+  return reais.toLocaleString('pt-BR') + ',' + String(cents).padStart(2, '0');
+}
 document.getElementById('amountInput').addEventListener('input', (ev) => {
-  const v = ev.target.value.replace(/[^0-9,]/g, '');
-  state.form.amount = v;
-  if (ev.target.value !== v) ev.target.value = v;
+  const digits = ev.target.value.replace(/\D/g, '');
+  const masked = maskAmount(digits);
+  state.form.amount = masked;
+  ev.target.value = masked;
   syncSheet();
 });
 document.getElementById('descInput').addEventListener('input', (ev) => {
